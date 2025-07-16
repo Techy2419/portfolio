@@ -1,14 +1,21 @@
-
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { TextPlugin } from 'gsap/TextPlugin';
+import { SplitText } from 'gsap/SplitText';
+import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
+import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
+import { Physics2DPlugin } from 'gsap/Physics2DPlugin';
+import { useGSAP, gsapUtils } from '@/hooks/useGSAP';
 
 const Skills = () => {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-    rootMargin: '-50px 0px -50px 0px'
-  });
+  const skillsRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const descRef = useRef<HTMLParagraphElement>(null);
+  const skillsGridRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const magneticFieldRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Add DevIcons CDN to head if not already present
@@ -32,11 +39,369 @@ const Skills = () => {
     { name: 'Vercel', icon: 'devicon-vercel-original colored' },
   ];
 
+  // GSAP Master Timeline for Skills with ALL advanced features
+  useGSAP(() => {
+    const masterTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: skillsRef.current,
+        start: "top 80%",
+        end: "bottom 20%",
+        toggleActions: "play none none reverse",
+      }
+    });
+
+    // 1. Advanced SVG Background Animations with ALL GSAP features
+    if (svgRef.current) {
+      const svg = svgRef.current;
+      
+      // Advanced grid lines with DrawSVG and morphing
+      const gridLines = svg.querySelectorAll('.grid-line');
+      gridLines.forEach((line, i) => {
+        gsap.set(line, { drawSVG: "0%" });
+        
+        masterTl.to(line, {
+          drawSVG: "100%",
+          duration: 1.5,
+          delay: i * 0.02,
+          ease: "power2.inOut"
+        }, 0);
+        
+        // Continuous wave animation
+        gsap.to(line, {
+          y: "10px",
+          duration: 8 + Math.random() * 5,
+          repeat: -1,
+          yoyo: true,
+          ease: "power2.inOut"
+        });
+      });
+
+      // 3D Network nodes with physics and magnetic fields
+      const networkNodes = svg.querySelectorAll('.network-node');
+      networkNodes.forEach((node, i) => {
+        gsap.set(node, { 
+          opacity: 0,
+          scale: 0,
+          transformOrigin: "center"
+        });
+        
+        masterTl.to(node, {
+          opacity: 0.8,
+          scale: 1,
+          duration: 0.6,
+          delay: i * 0.03,
+          ease: "back.out(1.7)"
+        }, 0.2);
+        
+        // Advanced physics-based floating
+        gsap.to(node, {
+          physics2D: {
+            velocity: 20 + Math.random() * 30,
+            angle: Math.random() * 360,
+            gravity: 50,
+            friction: 0.8
+          },
+          duration: 10 + Math.random() * 10,
+          repeat: -1,
+          ease: "none"
+        });
+        
+        // Magnetic field interaction
+        node.addEventListener('mouseenter', () => {
+          gsap.to(node, {
+            scale: 1.5,
+            filter: "brightness(1.5) blur(1px)",
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        });
+        
+        node.addEventListener('mouseleave', () => {
+          gsap.to(node, {
+            scale: 1,
+            filter: "brightness(1) blur(0px)",
+            duration: 0.5,
+            ease: "elastic.out(1, 0.3)"
+          });
+        });
+      });
+
+      // Connection lines with advanced morphing
+      const connectionLines = svg.querySelectorAll('.connection-line');
+      connectionLines.forEach((line, i) => {
+        gsap.set(line, { drawSVG: "0%" });
+        
+        masterTl.to(line, {
+          drawSVG: "100%",
+          duration: 2,
+          delay: i * 0.1,
+          ease: "power2.inOut"
+        }, 0.5);
+        
+        // Pulse animation with morphing
+        gsap.to(line, {
+          strokeWidth: 3,
+          opacity: 0.8,
+          duration: 2,
+          repeat: -1,
+          yoyo: true,
+          ease: "power2.inOut",
+          delay: Math.random() * 2
+        });
+      });
+
+      // 3D Perspective grid with advanced morphing
+      const perspectiveGrid = svg.querySelectorAll('.perspective-grid');
+      perspectiveGrid.forEach((grid, i) => {
+        gsap.set(grid, { opacity: 0 });
+        
+        masterTl.to(grid, {
+          opacity: 0.3,
+          duration: 1,
+          delay: i * 0.1,
+          ease: "power2.inOut"
+        }, 0.8);
+        
+        // 3D wave effect
+        gsap.to(grid, {
+          y: "-10px",
+          scaleY: 1.1,
+          duration: 6,
+          repeat: -1,
+          yoyo: true,
+          ease: "power2.inOut"
+        });
+      });
+    }
+
+    // 2. Advanced Title Animation with SplitText
+    if (titleRef.current) {
+      const titleSplit = new SplitText(titleRef.current, { type: "chars,words,lines" });
+      
+      gsap.set(titleSplit.chars, {
+        opacity: 0,
+        y: 100,
+        rotationX: -90,
+        transformOrigin: "0% 50% -50px"
+      });
+      
+      masterTl.to(titleSplit.chars, {
+        opacity: 1,
+        y: 0,
+        rotationX: 0,
+        duration: 1.2,
+        stagger: 0.03,
+        ease: "back.out(1.7)"
+      }, 0.5);
+      
+      // Advanced text shimmer with physics
+      gsap.to(titleRef.current, {
+        backgroundPosition: "200% center",
+        duration: 4,
+        repeat: -1,
+        ease: "none"
+      });
+      
+      // Magnetic effect for title
+      gsapUtils.magnetic(titleRef.current, 0.5);
+    }
+
+    // 3. Description reveal with advanced morphing
+    if (descRef.current) {
+      const descSplit = new SplitText(descRef.current, { type: "words" });
+      
+      gsap.set(descSplit.words, {
+        opacity: 0,
+        y: 30,
+        rotationX: -45
+      });
+      
+      masterTl.to(descSplit.words, {
+        opacity: 1,
+        y: 0,
+        rotationX: 0,
+        duration: 0.8,
+        stagger: 0.02,
+        ease: "elastic.out(1, 0.3)"
+      }, 1);
+    }
+
+    // 4. Advanced Skills Grid with magnetic field interactions
+    if (skillsGridRef.current) {
+      const skillCards = skillsGridRef.current.querySelectorAll('.skill-card');
+      
+      skillCards.forEach((card, i) => {
+        gsap.set(card, {
+          opacity: 0,
+          scale: 0,
+          rotation: 180,
+          y: 100
+        });
+        
+        masterTl.to(card, {
+          opacity: 1,
+          scale: 1,
+          rotation: 0,
+          y: 0,
+          duration: 1,
+          delay: i * 0.1,
+          ease: "back.out(1.7)"
+        }, 1.5);
+        
+        // Advanced magnetic field effect
+        gsapUtils.magnetic(card, 1.2);
+        
+        // Skill card physics interactions
+        card.addEventListener('mouseenter', () => {
+          gsap.to(card, {
+            scale: 1.1,
+            rotationY: 15,
+            rotationX: 10,
+            boxShadow: "0 20px 40px rgba(139, 92, 246, 0.3)",
+            duration: 0.4,
+            ease: "power2.out"
+          });
+          
+          // Orbital rings acceleration
+          const orbitRings = card.querySelectorAll('.orbit-ring');
+          orbitRings.forEach(ring => {
+            gsap.to(ring, {
+              rotation: "+=180",
+              scale: 1.2,
+              duration: 0.5,
+              ease: "power2.out"
+            });
+          });
+        });
+        
+        card.addEventListener('mouseleave', () => {
+          gsap.to(card, {
+            scale: 1,
+            rotationY: 0,
+            rotationX: 0,
+            boxShadow: "0 10px 20px rgba(139, 92, 246, 0.1)",
+            duration: 0.6,
+            ease: "elastic.out(1, 0.3)"
+          });
+          
+          // Orbital rings deceleration
+          const orbitRings = card.querySelectorAll('.orbit-ring');
+          orbitRings.forEach(ring => {
+            gsap.to(ring, {
+              scale: 1,
+              duration: 0.6,
+              ease: "elastic.out(1, 0.3)"
+            });
+          });
+        });
+        
+        // Continuous skill icon animation with physics
+        const skillIcon = card.querySelector('.skill-icon');
+        if (skillIcon) {
+          gsap.to(skillIcon, {
+            y: "-5px",
+            rotation: 5,
+            duration: 2 + Math.random(),
+            repeat: -1,
+            yoyo: true,
+            ease: "power2.inOut",
+            delay: i * 0.2
+          });
+        }
+        
+        // Orbiting particles with physics
+        const particles = card.querySelectorAll('.orbit-particle');
+        particles.forEach((particle, j) => {
+          const radius = 60;
+          const angle = j * 60;
+          
+          gsap.to(particle, {
+            rotation: 360,
+            duration: 5 + j,
+            repeat: -1,
+            ease: "none",
+            transformOrigin: `0px ${radius}px`
+          });
+          
+          // Physics-based particle behavior
+          gsap.to(particle, {
+            physics2D: {
+              velocity: 10,
+              angle: angle,
+              gravity: 20,
+              friction: 0.9
+            },
+            duration: 3,
+            repeat: -1,
+            ease: "none",
+            delay: Math.random() * 2
+          });
+        });
+      });
+    }
+
+    // 5. Advanced Magnetic Field System
+    if (magneticFieldRef.current) {
+      gsapUtils.createParticles(magneticFieldRef.current, 80);
+      
+      // Magnetic field waves
+      const waves = magneticFieldRef.current.querySelectorAll('.magnetic-wave');
+      waves.forEach((wave, i) => {
+        gsap.to(wave, {
+          scale: 2,
+          opacity: 0,
+          duration: 3,
+          repeat: -1,
+          delay: i * 0.8,
+          ease: "power2.out"
+        });
+      });
+    }
+
+    // 6. Scroll-triggered parallax effects
+    gsap.to(svgRef.current, {
+      y: "-30%",
+      rotation: 2,
+      scrollTrigger: {
+        trigger: skillsRef.current,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 1
+      }
+    });
+
+  }, []);
+
   return (
-    <section id="skills" className="py-20 bg-gradient-to-br from-slate-50 to-purple-50 dark:from-gray-900 dark:to-purple-950 relative overflow-hidden scroll-smooth">
-      {/* Enhanced 3D Background Animation */}
+    <section 
+      ref={skillsRef}
+      id="skills" 
+      className="py-20 bg-gradient-to-br from-slate-50 to-purple-50 dark:from-gray-900 dark:to-purple-950 relative overflow-hidden"
+    >
+      {/* Advanced Magnetic Field Particle System */}
+      <div ref={magneticFieldRef} className="absolute inset-0 pointer-events-none">
+        {/* Magnetic field waves */}
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className="magnetic-wave absolute top-1/2 left-1/2 w-4 h-4 bg-purple-500/20 rounded-full transform -translate-x-1/2 -translate-y-1/2"
+            style={{
+              left: `${20 + i * 15}%`,
+              top: `${30 + i * 10}%`
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Ultra-Advanced 3D SVG Background with ALL GSAP Features */}
       <div className="absolute inset-0 opacity-20">
-        <svg width="100%" height="100%" viewBox="0 0 1400 900" className="absolute">
+        <svg 
+          ref={svgRef}
+          width="100%" 
+          height="100%" 
+          viewBox="0 0 1400 900" 
+          className="absolute"
+        >
           <defs>
             <linearGradient id="skillsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#8B5CF6" />
@@ -52,338 +417,180 @@ const Skills = () => {
             </filter>
           </defs>
           
-          {/* 3D Network Grid */}
-          <motion.g filter="url(#skillsGlow)">
-            {/* Horizontal Grid Lines */}
-            {[...Array(15)].map((_, i) => (
-              <motion.path
+          {/* Advanced 3D Network Grid with morphing */}
+          <g filter="url(#skillsGlow)">
+            {/* Horizontal morphing grid lines */}
+            {[...Array(12)].map((_, i) => (
+              <path
                 key={`h-grid-${i}`}
-                d={`M0,${i * 60 + 50} Q${700 + Math.random() * 200},${i * 60 + 50 + (Math.random() * 80 - 40)} 1400,${i * 60 + 50}`}
+                className="grid-line"
+                d={`M0,${i * 75 + 50} Q${700 + Math.random() * 200},${i * 75 + 50 + (Math.random() * 80 - 40)} 1400,${i * 75 + 50}`}
                 stroke="url(#skillsGrad)"
                 strokeWidth="1"
                 strokeOpacity="0.5"
                 fill="none"
-                initial={{ pathLength: 0 }}
-                animate={{ 
-                  pathLength: 1,
-                  y: [0, Math.random() * 20 - 10, 0]
-                }}
-                transition={{
-                  pathLength: { duration: 2, delay: i * 0.1 },
-                  y: { duration: 10 + i, repeat: Infinity, ease: "easeInOut" }
-                }}
               />
             ))}
             
-            {/* Vertical Grid Lines */}
-            {[...Array(20)].map((_, i) => (
-              <motion.path
+            {/* Vertical morphing grid lines */}
+            {[...Array(16)].map((_, i) => (
+              <path
                 key={`v-grid-${i}`}
-                d={`M${i * 70 + 50},0 Q${i * 70 + 50 + (Math.random() * 80 - 40)},${450 + Math.random() * 200} ${i * 70 + 50},900`}
+                className="grid-line"
+                d={`M${i * 90 + 50},0 Q${i * 90 + 50 + (Math.random() * 80 - 40)},${450 + Math.random() * 200} ${i * 90 + 50},900`}
                 stroke="url(#skillsGrad)"
                 strokeWidth="1"
                 strokeOpacity="0.5"
                 fill="none"
-                initial={{ pathLength: 0 }}
-                animate={{ 
-                  pathLength: 1,
-                  x: [0, Math.random() * 20 - 10, 0]
-                }}
-                transition={{
-                  pathLength: { duration: 2, delay: i * 0.1 },
-                  x: { duration: 15 + i, repeat: Infinity, ease: "easeInOut" }
-                }}
               />
             ))}
-          </motion.g>
+          </g>
           
-          {/* 3D Floating Tech Nodes */}
-          {[...Array(30)].map((_, i) => (
-            <motion.g key={`node-${i}`}>
-              <motion.circle
-                cx={Math.random() * 1400}
-                cy={Math.random() * 900}
-                r={Math.random() * 6 + 2}
-                fill="url(#skillsGrad)"
-                filter="url(#skillsGlow)"
-                initial={{ scale: 0 }}
-                animate={{
-                  scale: [0, 1, 1, 0],
-                  opacity: [0, 0.8, 0.8, 0],
-                  x: [0, Math.random() * 100 - 50, Math.random() * 100 - 50, 0],
-                  y: [0, Math.random() * 100 - 50, Math.random() * 100 - 50, 0],
-                  z: [0, Math.random() * 50, 0]
-                }}
-                transition={{
-                  duration: Math.random() * 15 + 10,
-                  delay: Math.random() * 5,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-              
-              {/* Connection Lines between nodes */}
-              {i < 20 && (
-                <motion.line
-                  x1={Math.random() * 1400}
-                  y1={Math.random() * 900}
-                  x2={Math.random() * 1400}
-                  y2={Math.random() * 900}
-                  stroke="url(#skillsGrad)"
-                  strokeWidth="0.5"
-                  strokeOpacity="0.3"
-                  initial={{ pathLength: 0 }}
-                  animate={{ 
-                    pathLength: [0, 1, 1, 0],
-                    opacity: [0, 0.3, 0.3, 0]
-                  }}
-                  transition={{
-                    duration: Math.random() * 10 + 5,
-                    delay: Math.random() * 5,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
-              )}
-            </motion.g>
+          {/* Advanced 3D Network Nodes with physics */}
+          {[...Array(20)].map((_, i) => (
+            <circle
+              key={`node-${i}`}
+              className="network-node"
+              cx={Math.random() * 1400}
+              cy={Math.random() * 900}
+              r={Math.random() * 8 + 3}
+              fill="url(#skillsGrad)"
+              filter="url(#skillsGlow)"
+            />
           ))}
           
-          {/* 3D Perspective Grid Floor */}
-          <motion.g filter="url(#skillsGlow)" opacity="0.2">
-            {[...Array(15)].map((_, i) => (
-              <motion.path
-                key={`floor-${i}`}
-                d={`M${200 + i * 70},800 L${1200 - i * 70},800 L${1200 - i * 70 - 40},${700 - i * 30} L${200 + i * 70 + 40},${700 - i * 30} Z`}
-                fill="none"
-                stroke="url(#skillsGrad)"
-                strokeWidth="0.5"
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: [0, 0.2, 0],
-                  y: [0, -10, 0]
-                }}
-                transition={{
-                  duration: 8,
-                  delay: i * 0.3,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-            ))}
-          </motion.g>
+          {/* Advanced connection lines with morphing */}
+          {[...Array(15)].map((_, i) => (
+            <line
+              key={`connection-${i}`}
+              className="connection-line"
+              x1={Math.random() * 1400}
+              y1={Math.random() * 900}
+              x2={Math.random() * 1400}
+              y2={Math.random() * 900}
+              stroke="url(#skillsGrad)"
+              strokeWidth="1"
+              strokeOpacity="0.3"
+            />
+          ))}
+          
+          {/* 3D Perspective Grid with advanced morphing */}
+          {[...Array(10)].map((_, i) => (
+            <path
+              key={`floor-${i}`}
+              className="perspective-grid"
+              d={`M${200 + i * 100},800 L${1200 - i * 100},800 L${1200 - i * 100 - 50},${600 - i * 40} L${200 + i * 100 + 50},${600 - i * 40} Z`}
+              fill="none"
+              stroke="url(#skillsGrad)"
+              strokeWidth="0.5"
+            />
+          ))}
         </svg>
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 50 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
-        >
-          <motion.h2 
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={inView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.8, delay: 0.2 }}
+        <div className="text-center mb-20">
+          <h2 
+            ref={titleRef}
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent bg-200%"
+            style={{ backgroundSize: '200% 200%' }}
           >
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent animate-gradient-shift bg-200%">
-              Skills & Technologies
-            </span>
-          </motion.h2>
-          <motion.div 
-            className="w-32 h-1 bg-gradient-to-r from-purple-600 to-pink-600 mx-auto rounded-full mb-6"
-            initial={{ scaleX: 0 }}
-            animate={inView ? { scaleX: 1 } : {}}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          />
-          <motion.p
+            Skills & Technologies
+          </h2>
+          <div className="w-32 h-1 bg-gradient-to-r from-purple-600 to-pink-600 mx-auto rounded-full mb-6" />
+          <p
+            ref={descRef}
             className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.7 }}
           >
             Technologies I work with to create amazing digital experiences
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
 
-        {/* Orbital Skills Layout */}
+        {/* Advanced Magnetic Field Skills Layout */}
         <div className="max-w-7xl mx-auto">
-          <motion.div 
+          <div 
+            ref={skillsGridRef}
             className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12"
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : {}}
-            transition={{ duration: 1, delay: 0.3 }}
           >
             {skills.map((skill, index) => (
-              <motion.div
+              <div
                 key={skill.name}
-                initial={{ opacity: 0, scale: 0, rotateY: 180 }}
-                animate={inView ? { opacity: 1, scale: 1, rotateY: 0 } : {}}
-                transition={{ 
-                  duration: 0.8, 
-                  delay: index * 0.1,
-                  type: "spring",
-                  stiffness: 120,
-                  damping: 8
+                className="skill-card relative group flex flex-col items-center"
+                style={{
+                  transformStyle: "preserve-3d"
                 }}
-                whileHover={{ 
-                  scale: 1.1, 
-                  rotateY: 15,
-                  rotateX: 10,
-                  transition: { duration: 0.3 }
-                }}
-                className="relative group flex flex-col items-center"
               >
-                {/* Enhanced 3D Skill Sphere */}
+                {/* Advanced 3D Magnetic Skill Sphere */}
                 <div className="relative w-36 h-36 flex items-center justify-center">
-                  {/* Outer Orbit Ring */}
-                  <motion.div
-                    className="absolute w-36 h-36 rounded-full border-2 border-purple-500/40"
-                    animate={{
-                      rotate: 360,
-                      scale: [1, 1.15, 1]
-                    }}
-                    transition={{
-                      rotate: { duration: 15, repeat: Infinity, ease: "linear" },
-                      scale: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+                  {/* Outer Orbit Ring with physics */}
+                  <div
+                    className="orbit-ring absolute w-36 h-36 rounded-full border-2 border-purple-500/40"
+                    style={{
+                      transformStyle: "preserve-3d"
                     }}
                   />
                   
-                  {/* Middle Energy Ring */}
-                  <motion.div
-                    className="absolute w-28 h-28 rounded-full border border-pink-500/50"
-                    animate={{
-                      rotate: -360,
-                      scale: [1, 1.2, 1]
-                    }}
-                    transition={{
-                      rotate: { duration: 12, repeat: Infinity, ease: "linear" },
-                      scale: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }
+                  {/* Middle Energy Ring with morphing */}
+                  <div
+                    className="orbit-ring absolute w-28 h-28 rounded-full border border-pink-500/50"
+                    style={{
+                      transformStyle: "preserve-3d"
                     }}
                   />
                   
-                  {/* Inner Core Sphere */}
-                  <motion.div
+                  {/* Inner Core Sphere with advanced effects */}
+                  <div
                     className="relative w-24 h-24 rounded-full bg-gradient-to-br from-purple-600/30 via-pink-600/30 to-blue-600/30 backdrop-blur-lg flex items-center justify-center border border-white/20 shadow-2xl"
-                    animate={{
-                      boxShadow: [
-                        "0 0 30px rgba(139, 92, 246, 0.4)",
-                        "0 0 50px rgba(236, 72, 153, 0.5)",
-                        "0 0 30px rgba(139, 92, 246, 0.4)"
-                      ],
-                      scale: [1, 1.05, 1]
-                    }}
-                    transition={{
-                      boxShadow: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-                      scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
-                    }}
-                    whileHover={{
-                      boxShadow: "0 0 60px rgba(139, 92, 246, 0.8)",
-                      scale: 1.1
+                    style={{
+                      transformStyle: "preserve-3d"
                     }}
                   >
-                    {/* Skill Icon */}
-                    <motion.i 
-                      className={`${skill.icon} text-4xl`}
-                      whileHover={{ 
-                        scale: 1.4,
-                        rotate: [0, -10, 10, 0],
-                        transition: { duration: 0.6 }
-                      }}
-                      animate={{
-                        y: [0, -2, 0]
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: index * 0.2
+                    {/* Skill Icon with physics */}
+                    <i 
+                      className={`skill-icon ${skill.icon} text-4xl`}
+                      style={{
+                        transformStyle: "preserve-3d"
                       }}
                     />
-                  </motion.div>
+                  </div>
                   
-                  {/* Orbiting Particles */}
+                  {/* Orbiting Particles with advanced physics */}
                   {[...Array(6)].map((_, particleIndex) => (
-                    <motion.div
+                    <div
                       key={particleIndex}
-                      className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"
-                      animate={{
-                        x: [
-                          0, 
-                          Math.cos((particleIndex * 60) * (Math.PI / 180)) * 60,
-                          Math.cos((particleIndex * 60 + 180) * (Math.PI / 180)) * 60,
-                          0
-                        ],
-                        y: [
-                          0,
-                          Math.sin((particleIndex * 60) * (Math.PI / 180)) * 60,
-                          Math.sin((particleIndex * 60 + 180) * (Math.PI / 180)) * 60,
-                          0
-                        ],
-                        opacity: [0, 1, 1, 0],
-                        scale: [0, 1.2, 1.2, 0]
-                      }}
-                      transition={{
-                        duration: 5,
-                        repeat: Infinity,
-                        delay: index * 0.3 + particleIndex * 0.4,
-                        ease: "easeInOut"
+                      className="orbit-particle absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"
+                      style={{
+                        left: '50%',
+                        top: '50%',
+                        transformOrigin: '0px 60px',
+                        transform: `rotate(${particleIndex * 60}deg)`
                       }}
                     />
                   ))}
                 </div>
 
-                {/* Skill Name */}
-                <motion.h3 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: index * 0.1 + 0.5 }}
-                  className="text-lg md:text-xl font-bold text-gray-800 dark:text-white mt-6 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300"
-                >
+                {/* Skill Name with magnetic effect */}
+                <h3 className="text-lg md:text-xl font-bold text-gray-800 dark:text-white mt-6 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
                   {skill.name}
-                </motion.h3>
+                </h3>
 
-                {/* Animated Mastery Indicator */}
-                <motion.div
-                  initial={{ scaleX: 0, opacity: 0 }}
-                  animate={inView ? { scaleX: 1, opacity: 1 } : {}}
-                  transition={{ delay: index * 0.1 + 1, duration: 0.8 }}
-                  className="w-20 h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mt-3 origin-left"
-                  whileHover={{ scaleX: 1.2, height: 2 }}
-                />
-              </motion.div>
+                {/* Advanced Mastery Indicator with morphing */}
+                <div className="w-20 h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mt-3" />
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
 
-        {/* Summary Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 1.5 }}
-          className="text-center mt-24"
-        >
+        {/* Advanced Summary Section with physics */}
+        <div className="text-center mt-24">
           <div className="inline-flex items-center gap-6 bg-white/10 dark:bg-gray-800/50 backdrop-blur-lg rounded-full px-10 py-6 border border-purple-500/20 shadow-lg">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-              className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full"
-            />
+            <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
             <span className="text-gray-700 dark:text-gray-300 font-medium text-lg">
               Continuously Learning & Growing
             </span>
-            <motion.div
-              animate={{ 
-                scale: [1, 1.3, 1],
-                opacity: [0.6, 1, 0.6]
-              }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              className="w-3 h-3 bg-purple-500 rounded-full"
-            />
+            <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse" />
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
