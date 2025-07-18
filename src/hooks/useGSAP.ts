@@ -44,9 +44,8 @@ export const useGSAP = (animationFn: (ctx: gsap.Context) => void, deps: any[] = 
   const scope = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      animationFn(ctx);
-    }, scope);
+    const ctx = gsap.context(() => {}, scope);
+    animationFn(ctx);
 
     return () => ctx.revert();
   }, deps);
